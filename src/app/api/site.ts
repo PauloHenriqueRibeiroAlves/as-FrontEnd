@@ -1,5 +1,5 @@
 import { Event } from "../types/Event";
-import { ShearchResult } from "../types/searchResult";
+import { ShearchResult } from "../types/SearchResult";
 import { req } from "./axios";
 
 export const getEvent = async (id: number): Promise <Event | false>  => {
