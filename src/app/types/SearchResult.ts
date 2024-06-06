@@ -1,6 +1,6 @@
 import { person } from "./Person"
 
-export type ShearchResult = {
+export type SearchResult = {
     person: person;
     personMatched: person;
 }

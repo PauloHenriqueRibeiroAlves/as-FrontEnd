@@ -3,5 +3,7 @@ export type Event = {
     status: boolean;
     title: string;
     description: string;
-    grounped: boolean;
+    grouped: boolean;
 };
+
+//grounped: boolean;
