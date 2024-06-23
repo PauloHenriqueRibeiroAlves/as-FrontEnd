@@ -1,5 +1,6 @@
 import * as api from '@/app/api/server';
 import { redirect } from 'next/navigation';
+import { AdminPage } from '../components/Admin/AdminPAge';
 
 const Page = async () => {
     //requisição vinda da api
@@ -7,11 +8,7 @@ const Page = async () => {
     //condição para saber se está logado
     if (!logged) return redirect('/admin/login');
 
-    return(
-        <div>
-            Painel ADM
-        </div>
-    );
+    return <AdminPage/>
 }
 
 export default Page;

@@ -15,7 +15,7 @@ const Layout = ({ children }:Props) => {
             <h3 className="text-3xl">Amigo Secreto</h3>
             <h4 className="text-base">Painel de Controle</h4>
           </header>
-          <main className="mx-auto w-full max-w-3xl p-3 bg-red-900">{children}</main>
+          <main className="mx-auto w-full max-w-3xl p-3">{children}</main>
       </div>
   );
 }
