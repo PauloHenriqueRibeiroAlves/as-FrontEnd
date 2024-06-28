@@ -17,3 +17,24 @@ export const getEvents = async () => {
     });
     return json.data.events as Event[] ?? [];
 }
+//função para ecluir um evento
+export const deleteEvent = async (id: number) => {
+    const token = getCookie('token');
+    const json = await req.delete(`admin/events/${id}`, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return !json.data.error;
+}
+// função para adicionar um Evento
+type AddEventData = {
+    title: string;
+    description: string;
+    grouped: boolean;
+}
+export const addEvent = async (data: AddEventData): Promise<Event | false> => {
+    const token = getCookie('token');
+    const json = await req.post('admin/events/', data,
+        { headers: { 'Authorization': `Token ${token}` } });
+
+    return json.data.events as Event ?? false;
+}
