@@ -2,6 +2,7 @@
 import { getCookie } from 'cookies-next';
 import { req } from './axios';
 import { Event } from '../types/Event';
+import { Group } from '../types/Group';
 
 export const login = async (password: string) => {
     try {
@@ -51,4 +52,39 @@ export const updateEvent = async (id: number, data: updateEventData): Promise<Ev
         { headers: { 'Authorization': `Token ${token}` } });
 
     return json.data.events as Event ?? false;
+}
+//funções para adiciona, editar, excluir e pegar um grupo
+export const getGroups = async (eventId: number) => {
+    const token = getCookie('token');
+    const json = await req.get(`admin/events/${eventId}/groups`, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return json.data.groups as Group[] ?? [];
+}
+type addGroupData= {
+    name: string
+}
+export const addGroup = async (eventId: number, data: addGroupData): Promise<Group | false> => {
+    const token = getCookie('token');
+    const json = await req.post(`admin/events/${eventId}/groups`, data, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return json.data.group as Group ?? false;
+}
+type UpdataGroupData= {
+    name: string
+}
+export const udataGroup = async (eventId: number, id: number, data: UpdataGroupData): Promise<Group | false> => {
+    const token = getCookie('token');
+    const json = await req.put(`admin/events/${eventId}/groups`, data, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return json.data.group as Group ?? false;
+}
+export const deleteGroup = async (eventId: number, id: number) => {
+    const token = getCookie('token');
+    const json = await req.delete(`admin/events/${eventId}/groups/${id}`, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return !json.data.error;
 }
