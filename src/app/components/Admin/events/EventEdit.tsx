@@ -1,6 +1,7 @@
 "use client"
 import { Event } from "@/app/types/Event";
 import { useState } from "react";
+import { EventTabInfo } from "./EventTabInfo";
 
 type TabNames = 'info' | 'groups' | 'people'
 type Props  = {
@@ -26,7 +27,7 @@ export const EventEdit = ({ event, refreshAction}: Props) => {
                     Pessoas</div>
             </div>
             <div>
-                {tab === 'info' && 'infooo'}
+                {tab === 'info' && <EventTabInfo event={event} refreshAction={refreshAction}/>}
                 {tab === 'groups' && 'gruposss'}
                 {tab === 'people' && 'pessoasss'}
             </div>
