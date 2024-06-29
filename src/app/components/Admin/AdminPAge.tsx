@@ -8,11 +8,14 @@ import { FaPlus } from 'react-icons/fa';
 import { ModalScreen } from '@/app/types/ModalScreens';
 import { Modal } from './modal';
 import { EventAdd } from './events/EventAdd';
+import { EventEdit } from './events/EventEdit';
 
 export const AdminPage = () => {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const [modalScreen, setModalScreen] = useState<ModalScreen>(null);
+    //state para saber qual evento vou abrir
+    const [selectEvent, setSelectEvent] = useState<Event>();
 
     //função que vai fazer o corregamento das listas
     const loadEvents = async () => {
@@ -21,6 +24,11 @@ export const AdminPage = () => {
         const eventList = await api.getEvents();
         setLoading(false);
         setEvents(eventList);
+    }
+//função para editar o evento
+    const editEvent = (event: Event) => {
+        setSelectEvent(event);
+        setModalScreen('edit');
     }
 
     useEffect(() => {
@@ -42,7 +50,7 @@ export const AdminPage = () => {
                         key={item.id}
                         item={item}
                         refreshAction={loadEvents}
-                        openModal={() => {}}
+                        openModal={event => editEvent(event)}
                     />
                 ))}
                 {!loading && events.length === 0 &&
@@ -57,6 +65,8 @@ export const AdminPage = () => {
                 {modalScreen &&
                     <Modal onClose={() => setModalScreen(null)}>
                         {modalScreen === 'add' && <EventAdd refreshAcction={loadEvents}/>}
+                        {modalScreen === 'edit' && <EventEdit event={selectEvent} 
+                        refreshAction={loadEvents}/>}
                     </Modal>
                 }
             </div>
