@@ -3,6 +3,7 @@ import { Event } from "@/app/types/Event";
 import { useState } from "react";
 import { EventTabInfo } from "./EventTabInfo";
 import { EventTabGroups } from "../grupos/EventTabGroups";
+import { EventTabPeople } from "../peaople/EventTabPeople";
 
 type TabNames = 'info' | 'groups' | 'people'
 type Props  = {
@@ -30,7 +31,7 @@ export const EventEdit = ({ event, refreshAction}: Props) => {
             <div>
                 {tab === 'info' && <EventTabInfo event={event} refreshAction={refreshAction}/>}
                 {tab === 'groups' && <EventTabGroups eventId={event.id} />}
-                {tab === 'people' && 'pessoasss'}
+                {tab === 'people' && <EventTabPeople eventId={event.id} />}
             </div>
         </div>
     );

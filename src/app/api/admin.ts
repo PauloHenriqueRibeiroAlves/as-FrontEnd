@@ -3,6 +3,7 @@ import { getCookie } from 'cookies-next';
 import { req } from './axios';
 import { Event } from '../types/Event';
 import { Group } from '../types/Group';
+import { PersonComplete } from '../types/PersonConplete';
 
 export const login = async (password: string) => {
     try {
@@ -74,7 +75,8 @@ export const addGroup = async (eventId: number, data: addGroupData): Promise<Gro
 type UpdataGroupData= {
     name: string
 }
-export const udataGroup = async (eventId: number, id: number, data: UpdataGroupData): Promise<Group | false> => {
+export const udataGroup = async (eventId: number, id: number, 
+    data: UpdataGroupData): Promise<Group | false> => {
     const token = getCookie('token');
     const json = await req.put(`admin/events/${eventId}/groups`, data, {
         headers: { 'Authorization': `Token ${token}` }
@@ -84,6 +86,48 @@ export const udataGroup = async (eventId: number, id: number, data: UpdataGroupD
 export const deleteGroup = async (eventId: number, id: number) => {
     const token = getCookie('token');
     const json = await req.delete(`admin/events/${eventId}/groups/${id}`, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return !json.data.error;
+}
+
+//Pegar a lista das pessoas
+export const getPeople = async (eventId: number, groupId: number) => {
+    const token = getCookie('token');
+    const json = await req.get(`admin/events/${eventId}/groups/${groupId}/people`, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return json.data.people as PersonComplete[] ?? [];
+}
+//: Promise<PersonComplete | false>
+//função para adicionar uma pessoa
+type AddPersonData = {
+    name: string;
+    cpf: string;
+}
+export const addPerson = async (eventId: number, groupId: number, 
+    data: AddPersonData): Promise<PersonComplete | false> => {
+    const token = getCookie('token');
+    const json = await req.post(`admin/events/${eventId}/groups/${groupId}/people`, data, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return json.data.person as PersonComplete ?? false;
+}
+type UpdatePersonData = {
+    name?: string;
+    cpf?: string;
+}
+export const updatePerson = async (eventId: number, groupId: number, 
+    id: number, data: UpdatePersonData): Promise<PersonComplete | false> => {
+    const token = getCookie('token');
+    const json = await req.post(`admin/events/${eventId}/groups/${groupId}/people/${id}`, data, {
+        headers: { 'Authorization': `Token ${token}` }
+    });
+    return json.data.person as PersonComplete ?? false;
+}
+export const deletePrson = async (eventId: number, groupId: number, id: number) => {
+    const token = getCookie('token');
+    const json = await req.delete(`admin/events/${eventId}/groups/${groupId}/people/${id}`, {
         headers: { 'Authorization': `Token ${token}` }
     });
     return !json.data.error;
