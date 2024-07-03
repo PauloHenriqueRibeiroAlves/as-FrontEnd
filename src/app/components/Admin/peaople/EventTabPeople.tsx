@@ -3,7 +3,9 @@ import * as api from '../../../api/admin';
 import { useEffect, useState } from 'react';
 import { GroupItemNotFounde, GroupItemPlaceholder } from '../grupos/GroupItem';
 import { PersonComplete } from '@/app/types/PersonConplete';
-import { PersonItemNotFounde, PersonItemPlaceholder } from './PersonItem';
+import { PersonItem, PersonItemNotFounde, PersonItemPlaceholder } from './PersonItem';
+import { PersonAdd } from './PersonAdd';
+import { PersonEdit } from './PersonEdit';
 
 type Props = {
     eventId: number;
@@ -30,9 +32,12 @@ export const EventTabPeople = ({ eventId }:Props) => {
     //função para selecionar a pessoa apartir do grupo
     const [people, setPeople] = useState<PersonComplete[]>([]);
     const [peopleLoading, setPeopleLoading] = useState(false);
+    //state para saber qual pessoa está selecionada
+    const [selectedPerson, setSelectedPerson] = useState<PersonComplete | null>();
 
         const LoadingPeople = async () => {
         if (selectedGroupId <= 0) return;
+        setSelectedPerson(null);
         setPeople([]);
         setPeopleLoading(true);
         const peopleList = await api.getPeople(eventId, selectedGroupId);
@@ -41,7 +46,11 @@ export const EventTabPeople = ({ eventId }:Props) => {
     }
     useEffect(() => {
         LoadingPeople();
-    }, [selectedGroupId])
+    }, [selectedGroupId]);
+
+    const handleEditButton = (person: PersonComplete) => {
+        setSelectedPerson(person);
+    }
 
     return(
         <div>
@@ -62,9 +71,28 @@ export const EventTabPeople = ({ eventId }:Props) => {
             </div>
             {selectedGroupId > 0 &&
                 <>
-                    <div className="border border-dashed p-3 my-3">add/edit</div>
+                    <div className="border border-dashed p-3 my-3">
+                        {!selectedPerson &&
+                            <PersonAdd
+                                eventId={eventId}
+                                groupId={selectedGroupId}
+                                refreshAction={LoadingPeople}
+                            />
+                        }
+                        {selectedPerson &&
+                            <PersonEdit
+                                person={selectedPerson}
+                                refreshAction={LoadingPeople}
+                            />
+                        }
+                    </div>
                     {!peopleLoading && people.length > 0 && people.map(item =>(
-                        <div key={item.id}>{item.name}</div>
+                        <PersonItem
+                            key={item.id}
+                            item={item}
+                            refreshAction={LoadingPeople}
+                            onEdit={handleEditButton}
+                        />
                     ))}
                     {peopleLoading && 
                         <>
