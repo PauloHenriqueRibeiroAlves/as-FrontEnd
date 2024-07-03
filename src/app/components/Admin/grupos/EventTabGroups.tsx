@@ -1,7 +1,9 @@
 import { Group } from "@/app/types/Group";
 import { useEffect, useState } from "react";
 import * as api from '../../../api/admin';
-import { GroupItemNotFounde, GroupItemPlaceholder } from "./GroupItem";
+import { GroupItem, GroupItemNotFounde, GroupItemPlaceholder } from "./GroupItem";
+import { GroupAdd } from "./GroupAdd";
+import { GroupEdit } from "./GroupEdit";
 
 type Props = {
     eventId: number;
@@ -10,12 +12,19 @@ type Props = {
 export const EventTabGroups = ({ eventId }: Props) => {
     const [groups, setGroups] = useState<Group[]>([]);
     const [loading, setLoading] = useState(true);
+    //state para saber qual grupo foi selecionado
+    const [selectedGroup, setSelectedGroup] = useState<Group | null>();
 
     const loadGroups = async () => {
+        setSelectedGroup(null);
         setLoading(true);
         const groupList = await api.getGroups(eventId);
         setLoading(false);
         setGroups(groupList);
+    }
+
+    const handleEditButton = (group: Group) => {
+        setSelectedGroup(group);
     }
 
     useEffect(() => {
@@ -24,9 +33,18 @@ export const EventTabGroups = ({ eventId }: Props) => {
 
     return(
         <div>
-            <div>Add/Edit</div>
+            <div className="border border-dashed p-3 my-3">
+                {!selectedGroup && <GroupAdd eventId={eventId} refreshAction={loadGroups}/>}
+                {selectedGroup && <GroupEdit group={selectedGroup} refreshAction={loadGroups}/>}
+            </div>
+
             {!loading && groups.length > 0 && groups.map(item =>(
-                <div key={item.id}>{item.name}</div>
+                <GroupItem
+                    key={item.id}
+                    item={item}
+                    refreshAction={loadGroups}
+                    onEdit={handleEditButton}
+                />
             ))}
 
             {loading && 
